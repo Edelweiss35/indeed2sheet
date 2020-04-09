@@ -27,5 +27,6 @@ urlpatterns = [
     path('', include(router.urls)),
     path('api-auth/', include('rest_framework.urls', namespace='rest_framework')),
     path('refresh/', views.JobViewSet, name='refresh'),
-    path('newjobs/', views.GetNewJobs, name='newjobs')
+    path('newjobs/', views.GetNewJobs, name='newjobs'),
+    path('updatequery/', views.UpdateQuery, name='updatequery')
 ]

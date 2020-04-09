@@ -12,4 +12,4 @@ class UserSerializer(serializers.HyperlinkedModelSerializer):
 class JobSerializer(serializers.ModelSerializer):
     class Meta:
         model = Job
-        fields = ['href', 'title', 'cn', 'crv', 'crc', 'loc', 'metaheader', 'desc', 'date']
+        fields = ['href', 'title', 'cn', 'loc', 'metaheader', 'desc', 'date']
