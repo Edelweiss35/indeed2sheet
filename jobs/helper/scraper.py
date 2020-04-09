@@ -48,7 +48,8 @@ class scraper_indeed:
 
     def __scrape_job_links(self, driver, url):
         urls = []
-        for page in range(5):
+        urls_reverse = []
+        for page in range(1):
 
             i_url = url + "&start={}".format(page * 10)
             # print(i_url)
