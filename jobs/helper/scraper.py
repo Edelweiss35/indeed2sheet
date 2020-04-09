@@ -7,7 +7,7 @@ from webdriver_manager.chrome import ChromeDriverManager
 import requests
 from selenium.common.exceptions import NoSuchElementException
 import random
-from ..models import Job
+from ..models import Job, Query
 from django.db.utils import OperationalError
 
 
@@ -48,38 +48,35 @@ class scraper_indeed:
 
     def __scrape_job_links(self, driver, url):
         urls = []
-        for page in range(5):
+        query = Query.objects.all()[0].query
+        for page in range(2):
 
             i_url = url + "&start={}".format(page * 10)
-            # print(i_url)
             driver.get(i_url)
             link_list = driver.find_elements_by_xpath("//div[@class='title']/a")
-            # print(len(link_list))
 
             for link in link_list:
-                # print('---------------------------------1')
                 try:
-                    # print(link.get_attribute('href'))
-                    sel_job = Job.objects.filter(href=link.get_attribute('href')).first()
-                    # print(sel_job)
-                    # print('---------------------------------2')
+                    sel_job = Job.objects.filter(href=link.get_attribute('href'), query=query).first()
                     if sel_job != None:
                         continue
                 except Job.DoesNotExist:
-                    # print('---------------------------------3')
                     pass
-                # print('---------------------------------4')
                 urls.append(link.get_attribute('href'))
 
             time.sleep(random.random() + random.randint(6, 10))
-        return urls
+
+        urls_reverse = []
+        for i in range(len(urls)):
+            urls_reverse.append(urls[len(urls) - 1 - i])
+        return urls_reverse
 
     def __save_jobs(self, driver, urls):
         jobs = []
 
         for url in urls:
             job = {}
-            print(url)
+            #print(url)
             driver.get(url)
 
             job['href'] = url
@@ -132,10 +129,11 @@ class scraper_indeed:
                 pass
 
             job['desc'] = driver.find_element_by_xpath("//div[@class='jobsearch-jobDescriptionText']").text
-            # print(job)
+            #print(job)
             jobs.append(job)
 
+        query = Query.objects.all()[0].query
         for i in jobs:
-            p = Job(href=i['href'], title=i['title'], cn=i['cn'], crv=i['crv'], crc=i['crc'], loc=i['loc'], metaheader=i['metaheader'], desc=i['desc'])
+            p = Job(query=query, href=i['href'], title=i['title'], cn=i['cn'], crv=i['crv'], crc=i['crc'], loc=i['loc'], metaheader=i['metaheader'], desc=i['desc'])
             p.save()
         return jobs
