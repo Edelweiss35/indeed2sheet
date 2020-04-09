@@ -129,5 +129,5 @@ STATIC_URL = '/static/'
 
 
 CRONJOBS = [
-    ('0 */1 * * *', 'jobs.cron.my_cron_job')
+    ('*/5 * * * *', 'jobs.cron.my_cron_job')
 ]

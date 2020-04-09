@@ -49,7 +49,7 @@ class scraper_indeed:
     def __scrape_job_links(self, driver, url):
         urls = []
         query = Query.objects.all()[0].query
-        for page in range(2):
+        for page in range(1):
 
             i_url = url + "&start={}".format(page * 10)
             driver.get(i_url)
@@ -130,10 +130,22 @@ class scraper_indeed:
 
             job['desc'] = driver.find_element_by_xpath("//div[@class='jobsearch-jobDescriptionText']").text
             #print(job)
+
             jobs.append(job)
 
         query = Query.objects.all()[0].query
         for i in jobs:
-            p = Job(query=query, href=i['href'], title=i['title'], cn=i['cn'], crv=i['crv'], crc=i['crc'], loc=i['loc'], metaheader=i['metaheader'], desc=i['desc'])
+            try:
+                sel_job = Job.objects.filter(query=query, title=i['title'], cn=i['cn'], crv=i['crv'], crc=i['crc'],
+                                             loc=i['loc'], metaheader=i['metaheader'], desc=i['desc']).first()
+                if sel_job != None:
+                    sel_job.href = i['href']
+                    sel_job.save()
+                    continue
+            except Job.DoesNotExist:
+                pass
+
+            p = Job(query=query, href=i['href'], title=i['title'], cn=i['cn'], crv=i['crv'], crc=i['crc'],
+                    loc=i['loc'], metaheader=i['metaheader'], desc=i['desc'])
             p.save()
         return jobs
