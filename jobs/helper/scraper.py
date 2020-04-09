@@ -37,7 +37,7 @@ class scraper_indeed:
     def __get_driver(self, debug=False):
         options = Options()
         #if not debug:
-            #options.add_argument("--headless")
+        options.add_argument("--headless")
         options.add_argument("--window-size=1366,768")
         options.add_argument("--disable-notifications")
         options.add_argument("--lang=en")
