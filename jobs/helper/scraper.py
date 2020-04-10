@@ -49,7 +49,7 @@ class scraper_indeed:
     def __scrape_job_links(self, driver, url):
         urls = []
         query = Query.objects.all()[0].query
-        for page in range(2):
+        for page in range(1):
 
             i_url = url + "&start={}".format(page * 10)
             driver.get(i_url)
